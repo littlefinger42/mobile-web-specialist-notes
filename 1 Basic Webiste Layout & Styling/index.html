@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Meta Tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<title>1 - Basic Website Layout &amp; Styling - Mobile Web Specialist</title>
+		
+		<!-- Styling -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<style>
+		pre code {
+			color: #e83e8c;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Basic Website Layout &amp; Styling</h1>
+			
+			<div id="accordian">
+				<div class="card">
+					<div class="card-header" id="accessManipulateDomElementsHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#accessManipulateDomElements" aria-expanded="false" aria-controls="accessManipulateDomElements">
+								Accessing and manipulating DOM elements
+							</button>
+						</h5>
+					</div>
+					<div id="accessManipulateDomElements" class="collapse" aria-labelledby="accessManipulateDomElementsHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<h3>Querying the DOM</h3>
+										<p>
+											The DOM can be queried using the <strong>.querySelector</strong> method. This takes a arbitrary CSS selector as an arguement. If multiple elements fit the selector, the first matching element will be returned.
+											<br><code>const myElement = document.querySelector('div.myElement')</code>
+										</p>
+										<p>
+											If we want to get a collection of matches, we can use:
+											<br><code>const myElement = document.querySelectorAll('div.myElement')</code><br>
+											This will return a <strong>nodeList</strong>,  not an Array of elements.
+										</p>
+										<p>
+											If you already have reference to a parent element, you can query that element isntead of the whole document.
+											<br><code>parentElement.querySelector('.childElement')</code>
+										</p>
+										<div class="alert alert-warning">
+											<strong>.querySelector</strong> or <strong>.querySelectorAll</strong> arn't live. If you dynamically add a node element that matches the query, the collection wont update.
+										</div>
+										<h4>Working with NodeLists</h4>
+										<p>As mentioned earlier, <strong>.querySelectorAll</strong> returns a nodeList, not an Array. Therefore standard array functions wont work on this data. We can convert it to an array with either of these methods:</p>
+										<h5>ES6</h5>
+										<p>
+												<code>const elementsArray = Array.from(myElements)</code>
+										</p>
+										<h5>Pre-ES6</h5>
+										<p>
+											<code>Array.prototype.forEach.call(myElements, doSomethingWithEachElement)</code>
+											<code>[].forEach.call(myElements, doSomethingWithEachElement)</code>
+										</p>
+									</div>
+									<div class="col-sm">
+										<h3>Modifying the DOM</h3>
+										<p>We can move, create and delete elements using JavaScript:
+<br><pre><code>element1.appendChild(element2)
+element1.insertBefore(element2, element3)
+myParentElement.removeChild(myElement)
+const myNewElement = document.createElement('div')
+const myNewTextNode = document.createTextNode('some text')</code></pre>
+										</p>
+										<h3>Modifying Elements</h3>
+										<h4>Classes &amp; Attributes</h4>
+										<p>
+											Modifying <i>classes</i> can be done using the <strong>.classList</strong>:
+											<br>
+<pre><code>myElement.classList.add("foo");
+myElement.classList.remove("foo");
+myElement.classList.toggle("foo");
+myElement.classList.toggle("foo", toggleBoolean);</code></pre>
+										</p>
+										<p>
+											Modifying <i>attributes</i> can be done using <strong>.getAttribute</strong> and <strong>.setAttribute</strong>:
+											<br>
+<pre><code>var elementAttribute = myElement.getAttribute("any-attribute")
+var elementHasAttributeBoolean = myElement.hasAttribute("any-attribute")
+myElement.removeAttribute("any-attribute")
+myElement.setAttribute("any-attribute", value)
+</code></pre>
+										</p>
+										<h4>Styling</h4>
+										<p>CSS styles can be individually modified using JavaScript as well:
+											<br><code>myElement.style.marginLeft = '2em'</code>
+										</p>						
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="documentTypeDeclarationHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#documentTypeDeclaration" aria-expanded="false" aria-controls="documentTypeDeclaration">
+								Appropriate document type declaration and viewport tags
+							</button>
+						</h5>
+					</div>
+					<div id="documentTypeDeclaration" class="collapse" aria-labelledby="documentTypeDeclarationHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<h3>Viewport tags</h3>
+										<p>
+											Viewport meta tags are used to control how a viewport behaves on different browsers. A typical example would be:
+											<br><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>
+										</p>
+										<p><strong>Width</strong> property controls the size of the viewport. This can be set as pixels or with a special value (<i>device-width</i> is a special value).<br>If the viewport is zoomed in to display the top left of the page, then the viewport has been set to a fixed pixel width. If you see the entire width of the page, but it is zoomed out, then the viewport has been set to device-width.</p>
+										<p><strong>Initial Scale</strong> property controls the zoom level when the page is first loaded. The attribute <i>initial-scale=1</i> instructs browsers to establish a 1:1 relationship between CSS pixels and device-independent pixels. If you set the viewport to be the width of the device you don't need to zoom in to see the web page. To make sure that you web page isn't zoomed in when initially displayed you can use a property initial-scale to set the default zoom. There are also 'maximum-scale', 'minimum-scale' and 'user-scalable' properties which control how users are allowed to zoom.</p>
+									</div>
+									<div class="col-sm">
+										<h3>Document type declaration</h3>
+										<p>The declaration must be the first item in you HTML document. It isn't a HTML tag, but rather an instruction to the web browser about what type and version of document/HTML to expect. The common DOCTYPE declaration for HTML5 is:
+										<br><code>&lt;!DOCTYPE html&gt;</code></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="gridLayoutHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#gridLayout" aria-expanded="false" aria-controls="gridLayout">
+								A responsive grid-based layout using CSS
+							</button>
+						</h5>
+					</div>
+					<div id="gridLayout" class="collapse" aria-labelledby="gridLayoutHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<h3>CSS Grid</h3>
+										<h4>Grid Container
+											<small class="text-muted">The direct parent element</small>
+										</h4>
+										<p>To set the grid container, apply <code>display: grid | inline-grid | subgrid;</code> CSS property.</p>
+										<h5>grid-template-columns / grid-template-rows</h5>
+										<p>
+											Defines the columns and row sizes of the grid. Can use pixels, percentages, auto or <i>fr</i> units.
+<pre><code>.container {
+	grid-template-columns: 40px 50px auto 50px 40px;
+	grid-template-rows: 25% 100px auto;
+}</code></pre>
+											This property would match the following image:
+											<img src="images/grid-numbers.png" width="100%"/>
+										</p>
+										<p>
+											If you want, you can set explicit names for each row and column.
+<pre><code>.container {
+	grid-template-columns: [first] 40px [line2] 50px [line3] auto [col4-start] 50px [five] 40px [end];
+	grid-template-rows: [row1-start] 25% [row1-end] 100px [third-line] auto [last-line];
+}</code></pre>
+											This property would match the following image:
+											<img src="images/grid-names.png" width="100%"/>
+										</p>
+										<p>
+											The <i>fr</i> unit allows you to set the size as a fraction of free space. This example will equally set the space to one third for each column.
+<pre><code>.container {
+	grid-template-columns: 1fr 1fr 1fr;
+}
+.container {
+	grid-template-columns: 1fr 50px 1fr 1fr; //This calculates the free space after the 50px.
+}</code></pre>
+										</p>
+									</div>
+									<div class="col-sm">
+										<h3>Flexbox</h3>
+										<p>TODO from work</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="mediaQueriesHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#mediaQueries" aria-expanded="false" aria-controls="mediaQueries">
+								Media queries that provide fluid breakpoints across different screen sizes
+							</button>
+						</h5>
+					</div>
+					<div id="mediaQueries" class="collapse" aria-labelledby="mediaQueriesHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<p>Media queries can be used in CSS to apply different styles depending on the device and browser you are using to view the document. <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries" title="https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries">Read more on MDN.</a></p>
+								<div class="row">
+									<div class="col-sm">
+										<h3>Media Types</h3>
+										<p>
+											Media queries dont have to be only used for targetting screens, but can also target other devices such as printers. For example I can do:
+											<br><code>@media print { ... }</code> or <code>@media print, screen { ... }</code><br>
+											Possible media queries include:
+										</p>
+										<ul>
+											<li><b>all</b> Suitable for all devices</li>
+											<li><b>print</b> inteded for documents viewed on a screen in print preview mode</li>
+											<li><b>screen</b> intended just for screens</li>
+											<li><b>speech</b> intended for speech synthesisers</li>
+										</ul>
+										<h3>Media Features</h3>
+										<p>
+											Media features describe specific characteristics of a user agent. For example, you can apply styles to only widescreen monitors, computers that use mice, or devices being used in low-light conditions. They can be <i>range features</i>, meaning they have a max and min condition.
+											<br><code>@media (max-width: 1200px) { ... }</code><br>
+											This media query will apply the styles in the block if your browsers viewport is equal to, or less than 1200px wide. A full list of media features can be found <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries#Media_features" target="_blank">here</a>.
+										</p>
+										<p>
+											If you create a media feature without a specified value, the styles will be used as long as the feature's value isn't 0. For example:
+											<br><code>@media (color) { ... }</code><br>
+											This media query will be applied to any device with a colour screen.
+										</p>
+									</div>
+									<div class="col-sm">
+										<h3>Complex Media Queries</h3>
+										<p>
+											You can use the logical operators <i>not</i>, <i>and</i> and <i>only</i> when building media queries to combine multiple features and types.
+										</p>
+										<h4>AND</h4>
+										<p>
+<pre><code>@media (min-width: 30em) and (orientation: landscape) { … }
+@media screen and (min-width:30em) and (orientation: landscape) { … }</code></pre>
+										</p>
+										<h4>NOT</h4>
+										<p>
+<pre><code>@media (not screen) and (min-width:30em) { … }
+@media not (screen and (min-width:30em)) { … }</code></pre>
+										</p>
+										<h4>ONLY</h4>
+										<p>The only keyword prevents older browsers that do not support media queries with media features from applying the given styles. It has no effect on modern browsers.</p>
+										<h4>Comma-separated list</h4>
+										<p>
+											Comma-seperated lists are used like an OR operator. The user's device can match any one of the various media types/features/states. For example:
+											<br><code>@media (min-height: 680px), screen and (orientation: portrait) { ... }</code><br>
+											This media query applies the styles if the user's device has a minimum height of 680px OR is a screen device in portrait mode.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="multimediaTagsHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#multimediaTags" aria-expanded="false" aria-controls="multimediaTags">
+								Multimedia tags to display video and play audio
+							</button>
+						</h5>
+					</div>
+					<div id="multimediaTags" class="collapse" aria-labelledby="multimediaTagsHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col">
+										<h3>&lt;video&gt; tag</h3>
+										<p>The video tag allows you to embed a video easily. Example usage:
+<pre><code>&lt;video src="porn.webm" controls&gt;
+	&lt;source src="porn.webm" type="video/webm"&gt;
+	&lt;source src="porn.mp4" type="video/mp4"&gt;
+	&lt;p&gt;Your browser doesnt support HTML5 video. Here is a &lt;a href="porn.webm"&gt;link to the video&lt;/a&gt; instead.&lt;/p&gt;
+&lt;/video&gt;
+</code></pre>
+										</p>
+										<p>The <b>controls</b> attribute is omitted when you want to hide the video players controls. This is not recommended as epiletic users need to be able to pause videos.</p>
+										<p>Different browsers support different video (and audio) formats. This is because audio and video formats are patented and the browsers have to pay money to use them. Formats like MP3, MP4 and WebM are called <b>container formats</b>. These contain different parts of that make up the whole song or video (for example; audio track and video track).</p>
+										<ul>
+											<li>A webM container packages Ogg Vorbis audio, with VP8/VP9 video.</li>
+											<li>A MP4 container packages AAC or MP3 audio with H.264 video</li>
+										</ul>
+										<p>Browsers use <b>codecs</b> to convert the compressed sound and video into playable data.</p>
+										<p>Other attributes you can add to your video tag include:</p>
+										<ul>
+											<li><i>Controls</i> - if present, show controls</li>
+											<li><i>Autoplay</i> - if present, autoplay</li>
+											<li><i>Loop</i> - if present, loop</li>
+											<li><i>Muted</i> - if present, mute the video</li>
+											<li><i>Poster="linktoimage.jpg"</i> - if present, use this image as the pause screen</li>
+											<li><i>Width="400"</i> - Width of element</li>
+											<li><i>Height="400"</i> - Height of element</li>
+										</ul>
+										<h4>Subtitles</h4>
+										<p>
+											Subtitles are important from an accessibility point of view. Most users cant be expected to have headphones or be able to hear the audio from the video. WebVTT is a format for writing text files containing strings with metadata. These text strings are called <i>cues</i>. This format can be used for captions, subtitles or timed descriptions. To add it to your video, you just need to add it as a child, like you would do with a source. The tag you use is:
+											<br><code>&lt;track kind="subtitles" src="subtitles.vtt" srclang="en"&gt;</code><br>
+											For more information on subtitles, check out <a href="https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery/Adding_captions_and_subtitles_to_HTML5_video" title="https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery/Adding_captions_and_subtitles_to_HTML5_video">MDN</a>.
+										</p>
+
+										<h3>&lt;audio&gt; tag</h3>
+										<p>The audio tag works similar to the video tag, but with some small differences.</p>
+										<ul>
+											<li>Cant use width and height attributes, because there is no visual component.</li>
+											<li>It doesnt support the <i>poster</i> attribute, because there is no visual component.</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Scripts -->
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	</body>
+</html>
