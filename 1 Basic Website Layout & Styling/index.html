@@ -8,7 +8,7 @@
 		<title>1 - Basic Website Layout &amp; Styling - Mobile Web Specialist</title>
 		
 		<!-- Styling -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 		<style>
 		pre code {
 			color: #e83e8c;
@@ -306,6 +306,92 @@ myElement.setAttribute("any-attribute", value)
 											<li>Cant use width and height attributes, because there is no visual component.</li>
 											<li>It doesnt support the <i>poster</i> attribute, because there is no visual component.</li>
 										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="responsiveImagesHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#responsiveImages" aria-expanded="false" aria-controls="responsiveImages">
+								Responsive images that adjust depending on dimensions and resolution
+							</button>
+						</h5>
+					</div>
+					<div id="responsiveImages" class="collapse" aria-labelledby="responsiveImagesHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<h3>Raster optimisation</h3>
+										<img src="images/rasta.jpg" alt="Rastafarian"/>
+										<ul>
+											<li>Prefer a vector format if you can</li>
+											<li>Pick the best raster image format (JPG, PNG etc). If you have transparancy, pick PNG. If transparency isn't required, pick jpg.</li>
+											<li>Reduce the <strong>bit-depth</strong>, which is the amount of colours per channel.</li>
+											<li>Use <strong>delta-encoding</strong>, which figures out difference between one pixel and its adjacent pixel. Then it uses the difference instead of a unique colour value.</li>
+											<li>Reduce the overall dimensions of your image to the appropiate size for its application.</li>
+											<li>Remove unnecessary metadata</li>
+										</ul>
+									</div>
+									<div class="col-sm">
+										<h3>Vector optimisation</h3>
+										<ul>
+											<li>Remove meta-data and run through a SVG optimisation tool</li>
+											<li>GZIP it, if your server supports GZIP.</li>
+										</ul>
+										<p>Optimisation tools recommended for SVGs are <a href="https://github.com/svg/svgo" title="https://github.com/svg/svgo">SVGO</a>, or with the GUI: <a href="https://jakearchibald.github.io/svgomg/">SVGOMG</a>.</a></p>
+										<h3>Other tools</h3>
+										<ul><a href="https://www.imagemagick.org/" title="https://www.imagemagick.org/">imagemagick</a> - Server side optimisation of images</ul>
+										<ul><a href="http://jpegclub.org/jpegtran/" title="http://jpegclub.org/jpegtran/">jpegtran</a> - Image optimisation for jpegs</ul>
+										<ul><a href="http://www.lcdf.org/gifsicle/" title="http://www.lcdf.org/gifsicle/">Gifsicle</a> - Image optimisation for gifs</ul>
+										<ul><a href="http://optipng.sourceforge.net/" title="http://optipng.sourceforge.net/">optipng</a> - Lossless image optimisation for PNGs</ul>
+										<ul><a href="http://luci.criosweb.ro/riot/" title="http://luci.criosweb.ro/riot/">riot</a> - Image optimisation for many formats</ul>
+										<ul><a href="https://developers.google.com/speed/pagespeed/insights/" title="https://developers.google.com/speed/pagespeed/insights/">PageSpeed Insights</a> - Google page insights to identify images which could be optimised.</ul>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm">
+										<h3>Selecting image format</h3>
+										<img src="images/howtopickimageformat.png" alt="How to select correct image format"/>
+										<h3>Lossless vs Lossy Compression</h3>
+										<p>For certain types of data, it is crucial that the compressor does not alter or loose original information. In images, audio and video, it may be acceptable to deliver an "approximate" representation. Typically, the image optimisation pipeline consists of two high level steps:</p>
+										<ul>
+											<li><strong>Lossy</strong> filter that eliminates pixel data</li>
+											<li><strong>Lossless</strong> filter that compresses pixel data</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="touchEventsHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#touchEvents" aria-expanded="false" aria-controls="touchEvents">
+								Touch Events
+							</button>
+						</h5>
+					</div>
+					<div id="touchEvents" class="collapse" aria-labelledby="touchEventsHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<p>Sometimes a browser can send a touch <i>and</i> a mouse event from a single input. When a browser does this, it will send a <strong>touchstart</strong> event before any mouse events. If an application doesn't want mouse events to be fired with touch, handlers can call <strong>preventDefault()</strong></strong>. The event order is as follows:</p>
+										<ul>
+											<li>touchstart</li>
+											<li>None, or some touchmove events</li>
+											<li>touchend</li>
+											<li>mousemove</li>
+											<li>mousedown</li>
+											<li>mouseup</li>
+											<li>click</li>
+										</ul>
+										<p>Learn more about touch events with <a href="https://developer.mozilla.org/en-US/docs/Web/API/Touch_events">MDN</a>.</p>
 									</div>
 								</div>
 							</div>
