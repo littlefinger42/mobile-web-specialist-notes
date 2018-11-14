@@ -54,40 +54,37 @@
 					</div>
 				</div>
 				<div class="card">
-					<div class="card-header" id="corsHeader">
+					<div class="card-header" id="webManifestHeader">
 						<h5 class="mb-0">
-							<button class="btn btn-link" data-toggle="collapse" data-target="#cors" aria-expanded="false" aria-controls="cors">
-								CORS
+							<button class="btn btn-link" data-toggle="collapse" data-target="#webManifest" aria-expanded="false" aria-controls="webManifest">
+								Web Manifest
 							</button>
 						</h5>
 					</div>
-					<div id="cors" class="collapse" aria-labelledby="corsHeader" data-parent="#accordion">
+					<div id="webManifest" class="collapse" aria-labelledby="webManifestHeader" data-parent="#accordion">
 						<div class="card-body">
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-sm">
 										<h3>What</h3>
-										<p>CORS allows a user to access selected resources from a server on a different origin that the site currently in use by using request headers. The user makes a cross-origin HTTP request.</p>
-										<p>For security reasons, browsers restrict cross-origin HTTP requests initiated from within scripts. For example, the XMLHttpRequest and the Fetch API follow the same-origin policy. This means that the scripts can only make requests to the same domain that the site is hosted on.</p>
-										<h3>Where</h3>
-										<ul>
-											<li>XMLHttpRequest / Fetch</li>
-											<li>Webfonts</li>
-											<li>WebGL textures</li>
-											<li>Images &amp; video frames drawn using drawImage on a canvas</li>
-											<li>Stylesheets</li>
-											<li>Scripts</li>
-										</ul>
-										<h3>How</h3>
-										<p>CORS works by adding new HTTP headers that allow servers to describe the set of origins that are permitted to read information. Browsers are required to 'preflight' their requests using the OPTIONS request method, then upon approval from the server, send the actual request. Servers can also notify clients whether credentials are required with requests.</p>
-										<h3>Exceptions (simple requests)</h3>
-										<p>Some requests dont trigger CORS preflight. These are called <strong>simple requests</strong>. To be simple, you must meet the conditions:</p>
-										<ul>
-											<li>Either GET, HEAD or POST</li>
-											<li>Only headers allowed: Accept, Accept-language, Content-language, Content-type (x-www-form-urlencoded, form-data, text/plain), Last-Event-id, DPR, Save-Date, Viewport-Width, Width</li>
-											<li>No ReadableStream object is used in the request</li>
-										</ul>
-										<p>Read more about CORS on <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS" title="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">MDN</a>.</p>
+										<p>The web app manifest is a simple JSON which defines how the app looks, and provides the ability to attach to the home screen. It defines what the user can launch, and the appearance at launch.</p>        
+                                        <h3>How</h3>
+                                        <p>First you have to tell the browser to use your manifest file:<br>
+                                            <code>&lt;link rel="manifest" href="/manifest.json"&gt;</code>
+                                        </p>
+                                        <p>The manifest file can have various properties:</p>
+                                        <ul>
+                                            <li><strong>start_url</strong> - The first URL which is opened when you open the app. If this isn't defined, then the current page is used.</li>
+                                            <li><strong>name & short_name</strong> - short_name is used as the text for the user's homescreen. name is used in the webapp installation banner</li>
+                                            <li><strong>background_color</strong> - Unless this is set, the app launches with a white background</li>
+                                            <li><strong>icons</strong></li> - Array of icons in different sizes
+                                            <li><strong>theme_colour</strong> - Specifies the colour of the toolbar</li>
+                                            <li><strong>display</strong> - If you want your webapp to hide the browser's UI or not. Set to "standalone", otherwise to "browser"</li>
+                                            <li><strong>orientation</strong> - Can be landscape or portrait</li>
+                                        </ul>
+                                        <p>Click <a href="./manifest.json" title="Example manifest download link" target="_BLANK">here</a> to download a sample manifest</p>
+                                        <h3>Testing</h3>
+                                        <p>You can open the developer tool's <strong>Application</strong> pane.</p>
 									</div>
 								</div>
 							</div>
@@ -96,66 +93,6 @@
 				</div>
 			</div>
 		</div>
-
-		<script>
-			(function() {
-				//Simplest Json fetching
-				fetch('stufftofetch/movies.json').then(function(response) {
-					return response.json();
-				}).then(function(myJson) {
-					console.log('Simple fetching JSON:', JSON.stringify(myJson));
-				  });
-
-				//Checking to see if a fetch was successful
-				fetch('stufftofetch/movies.json').then(response => {
-					if (response.ok) {
-						return response.json();
-					}
-					throw new Error('Network response was not ok.');
-				}).then(myJson => { 
-					console.log('Checking if fetch successful fetching JSON:', JSON.stringify(myJson));
-				}).catch(error => {
-					console.log('There has been a problem with your fetch operation: ', error.message);
-				});
-
-				//Checking fetch status
-				var fetchStatus;
-				fetch('stufftofetch/movies.json').then(response => {
-					fetchStatus = response.status;
-					if (response.status === 200) {
-						return response.json();
-					}
-					throw new Error('Network response was not ok.');
-				}).then(myJson => { 
-					console.log('Checking if fetch status is 200:', fetchStatus, JSON.stringify(myJson));
-				}).catch(error => {
-					console.log('There has been a problem with your fetch operation: ', fetchStatus, error.message);
-				});
-				  
-				//Simplest Image fetching
-				fetch('stufftofetch/flowers.jpg').then(function(response) {
-					return response.blob()
-				}).then(function(myBlob) {
-					// var objectUrl = URL.createObjectUrl(myBlob);
-					// var myImage = document.querySelector('#myImage');
-					// myImage.src = objectUrl;
-				});
-
-				//Fetch error handling (chaining)
-				fetch('stufftofetch/movies.json').then(response => {
-					if (response.ok) {
-						return response;
-					}
-					throw new Error('Network response was not ok.');
-				}).then(response => {
-					return response.json()
-				}).then(myJson => {
-					console.log('Fetch error handling (chaining):', JSON.stringify(myJson));
-				}).catch(error => {
-					console.log('There has been a problem with your fetch operation: ', error.message);
-				});
-			}())
-		</script>
 
 		<!-- Scripts -->
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
