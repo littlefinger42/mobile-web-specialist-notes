@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Meta Tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<title>4 - Performance Optimization and Caching</title>
+		
+		<!-- Styling -->
+		<link rel="stylesheet" href="../../dist/style/style.css">
+	</head>
+	<body>
+		<div class="container">
+			<h1>Performance Optimisation and Caching</h1>
+			<a href="../../">Back</a>
+			
+			<div id="accordian">
+				<div class="card">
+					<div class="card-header" id="cacheApiHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#cacheApi" aria-expanded="false" aria-controls="cacheApi">
+								Cache API
+							</button>
+						</h5>
+					</div>
+					<div id="cacheApi" class="collapse" aria-labelledby="cacheApiHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<a href="https://developer.mozilla.org/en-US/docs/Web/API/Cache" title="https://developer.mozilla.org/en-US/docs/Web/API/Cache">Cache API MDN</a>
+										<h3>What</h3>
+										<p>A API to manage storage for requests and responses. An origin can have multiple caches; they are access by windows as well as workers.</p>
+									
+										<h3>Methods</h3>
+										<ul>
+											<li><code>Cache.match(request, options)</code> - Returns a promise that resolves to the response associated with the first matching request</li>
+											<li><code>Cache.matchAll(request, options)</code> - Returns a promise that resolves to an array of matching requests in the cache</li>
+											<li><code>Cache.add(request)</code> - Adds a response object to the cache. This is equivalent to calling <i>fetch()</i>, then using <i>put()</i>.</li>
+											<li><code>Cache.addAll([requests])</code> - Adds multiple response objects to the cache</li>
+											<li><code>Cache.put(request, response)</code> - Adds request and response to the cache</li>
+											<li><code>Cache.delete(request, options)</code> - Finds the entry. Returns a promise that resolves to true if the item has been deleted.</li>
+											<li><code>Cache.keys(request, options)</code> - Returns a promise that reolves to an array of cache keys</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="webManifestHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#webManifest" aria-expanded="false" aria-controls="webManifest">
+								Web Manifest
+							</button>
+						</h5>
+					</div>
+					<div id="webManifest" class="collapse" aria-labelledby="webManifestHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<h3>What</h3>
+										<p>The web app manifest is a simple JSON which defines how the app looks, and provides the ability to attach to the home screen. It defines what the user can launch, and the appearance at launch.</p>        
+                                        <h3>How</h3>
+                                        <p>First you have to tell the browser to use your manifest file:<br>
+                                            <code>&lt;link rel="manifest" href="/manifest.json"&gt;</code>
+                                        </p>
+                                        <p>The manifest file can have various properties:</p>
+                                        <ul>
+                                            <li><strong>start_url</strong> - The first URL which is opened when you open the app. If this isn't defined, then the current page is used.</li>
+                                            <li><strong>name & short_name</strong> - short_name is used as the text for the user's homescreen. name is used in the webapp installation banner</li>
+                                            <li><strong>background_color</strong> - Unless this is set, the app launches with a white background</li>
+                                            <li><strong>icons</strong></li> - Array of icons in different sizes
+                                            <li><strong>theme_colour</strong> - Specifies the colour of the toolbar</li>
+                                            <li><strong>display</strong> - If you want your webapp to hide the browser's UI or not. Set to "standalone", otherwise to "browser"</li>
+                                            <li><strong>orientation</strong> - Can be landscape or portrait</li>
+                                        </ul>
+                                        <p>Click <a href="./manifest.json" title="Example manifest download link" target="_BLANK">here</a> to download a sample manifest</p>
+                                        <h3>Testing</h3>
+                                        <p>You can open the developer tool's <strong>Application</strong> pane.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Scripts -->
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	</body>
+</html>
