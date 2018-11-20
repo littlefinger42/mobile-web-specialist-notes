@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Meta Tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<title>5 - Performance Optimization and Caching</title>
+		
+		<!-- Styling -->
+		<link rel="stylesheet" href="../../dist/style/style.css">
+	</head>
+	<body>
+		<div class="container">
+			<h1>5 - Performance Optimisation and Caching</h1>
+			<a class="btn btn-primary" role="button" href="../../">Back</a>
+			
+			<div id="accordian">
+				<div class="card">
+					<div class="card-header" id="cacheApiHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#cacheApi" aria-expanded="false" aria-controls="cacheApi">
+								Cache API
+							</button>
+						</h5>
+					</div>
+					<div id="cacheApi" class="collapse" aria-labelledby="cacheApiHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<a href="https://developer.mozilla.org/en-US/docs/Web/API/Cache" title="https://developer.mozilla.org/en-US/docs/Web/API/Cache">Cache API MDN</a>
+										<h3>What</h3>
+										<p>A API to manage storage for requests and responses. An origin can have multiple caches; they are access by windows as well as workers.</p>
+										<h3>Methods</h3>
+										<ul>
+											<li><code>Cache.match(request, options)</code> - Returns a promise that resolves to the response associated with the first matching request</li>
+											<li><code>Cache.matchAll(request, options)</code> - Returns a promise that resolves to an array of matching requests in the cache</li>
+											<li><code>Cache.add(request)</code> - Adds a response object to the cache. This is equivalent to calling <i>fetch()</i>, then using <i>put()</i>.</li>
+											<li><code>Cache.addAll([requests])</code> - Adds multiple response objects to the cache</li>
+											<li><code>Cache.put(request, response)</code> - Adds request and response to the cache</li>
+											<li><code>Cache.delete(request, options)</code> - Finds the entry. Returns a promise that resolves to true if the item has been deleted.</li>
+											<li><code>Cache.keys(request, options)</code> - Returns a promise that reolves to an array of cache keys</li>
+										</ul>
+										<h3>Examples</h3>
+										<p><a href="https://davidwalsh.name/cache" title="https://davidwalsh.name/cache">davidwalsh Cache API guide and examples</a></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="webWorkersHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#webWorkers" aria-expanded="false" aria-controls="webWorkers">
+								Web Workers
+							</button>
+						</h5>
+					</div>
+					<div id="webWorkers" class="collapse" aria-labelledby="webWorkersHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<h3>What</h3>
+										<p>Web workers allows running of scripts on background threads. Webworkers can communicate with the JS that initiated them by posting messages to an event handler. Web Workers run in seperate context from the current window, so referring to window wont work. There are two main types of service worker: <i>Dedicated workers</i> &amp; <i>Shared workers</i>.</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm">
+										<h3>Dedicated Workers</h3>
+										<p><a href="https://github.com/mdn/simple-web-worker" title="https://github.com/mdn/simple-web-worker">Example</a></p>
+										<p>A dedicated worker is only accessible from the script that called it.</p>
+										<h4>Initilisation</h4>
+										<p>
+											First check to see if Web Workers are available, then create one:
+<pre><code>if (window.Worker) {
+	var myWorker = new Worker('worker.js');
+}</code></pre>
+										</p>
+										<h4>Communication</h4>
+										<p>
+											Then we can send messages from our app to our web worker with the <i>postMessage</i> method:
+											<br>
+											<code>myWorker.postMessage('message');</code>
+											<br>
+											We can listen for messages in the webworker with the <i>onmessage</i> event handler block:
+<pre><code>onmessage = function(e) {
+	console.log('Message recieved:', e.data);
+}</code></pre>
+											And post them back to the app with <i>postMessage</i> again:
+											<br>
+											<code>postMessage('back to the app')</code>
+											<br>
+											Then recieve in the app with <i>myWorker.onmessage</i> event handler again:
+<pre><code>myWorker.onmessage = function(e) {
+	console.log('Message recieved:', e.data);
+}</code></pre>											
+										</p>
+										<h4>Terminiation</h4>
+										<p>
+											Web Workers can be terminated by the app or the worker with:
+											<br>
+											<code>myWorker.terminate();</code>
+											<br>
+											Or
+											<br>
+											<code>close();</code>
+										</p>
+										<h4>Importing scripts</h4>
+										<p>
+											Web Workers have access to <i>importScripts()</i> which allows them to import scripts:
+											<br>
+											<code>importScripts('foo.js', 'bar.js');</code>
+										</p>
+									</div>
+									<div class="col-sm">
+										<h3>Shared Workers</h3>
+										<a href="https://github.com/mdn/simple-shared-worker" title="https://github.com/mdn/simple-shared-worker">Example</a>
+										<p>A shared worker is accessible by multiple scripts - even if they are being accessed by different windows, iframes or workers.</p>
+										<h4>Initilisation</h4>
+										<code>var myWorker = new SharedWorker('worker.js');</code>
+										<h4>Communication</h4>
+										<p>The <i>postMessage()</i> method has to be invoked through the <i>port</i> object to allow Shared Web Workers to communicate. Follow <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers#Sending_messages_to_and_from_a_shared_worker" title="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers#Sending_messages_to_and_from_a_shared_worker">MDN</a> for more information.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="criticalRenderPathHeader">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#criticalRenderPath" aria-expanded="false" aria-controls="criticalRenderPath">
+								Critical Render Path
+							</button>
+						</h5>
+					</div>
+					<div id="criticalRenderPath" class="collapse" aria-labelledby="criticalRenderPathHeader" data-parent="#accordion">
+						<div class="card-body">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-sm">
+										<h3>What</h3>
+										<p>The critical render path is the series of events that must take place to render the initial view of the webpage.</p>
+										<h3>Optimising the render path</h3>
+										<p>
+											<ul>
+												<li>Minimise the number of critical resources</li>
+												<li>Minimise the number of critical bytes.</li>
+												<li>Minimise the critical path length</li>
+											</ul>
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm">
+										<h4>CSS/JS Optimisation</h4>
+										<p>
+											There are various ways you can optimise your CSS/JS including:
+											<ul>
+												<li>Combine multiple CSS/JS files</li>
+												<li>Minification</li>
+												<li>Inline critical CSS/JS (the css which is required for initial page load)</li>
+												<li>Load Async with the attribute <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content" title="https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content">rel="preload"</a> or async for scripts</li>
+											</ul>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Scripts -->
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	</body>
+</html>

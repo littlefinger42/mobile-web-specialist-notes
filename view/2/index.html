@@ -13,7 +13,7 @@
 	<body>
 		<div class="container">
 			<h1>Front-end Networking</h1>
-			<a href="../../">Back</a>
+			<a class="btn btn-primary" role="button" href="../../">Back</a>
 			
 			<div id="accordian">
 				<div class="card">
@@ -30,7 +30,7 @@
 								<div class="row">
 									<div class="col-sm">
 										<div id="myImage"></div>
-										<p>The fetch API provides a global <strong>fetch()</strong> method that is used to fetch resources synchronously. Fetch is an upgrade to XMLHttpRequest because it can be used by service workers. Read more about the options and parameters to setting up a request on <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">MDN</a>. It is used in the following format:</p>
+										<p>The fetch API provides a global <strong>fetch()</strong> method that is used to fetch resources synchronously. Fetch is an upgrade to XMLHttpRequest because it can be used by service workers, has far better syntax and uses promises. Read more about the options and parameters to setting up a request on <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">MDN</a>. It is used in the following format:</p>
 										<p>
 <pre><code>fetch(url, options) // Call the fetch function passing the url of the API as a parameter
 .then(function(response) {
@@ -61,6 +61,10 @@
 										</p>
 										<h3>Example 3</h3>								
 										<p><a href="https://googlechrome.github.io/samples/fetch-api/fetch-post.html" title="https://googlechrome.github.io/samples/fetch-api/fetch-post.html">POST request with a body</a></p>
+										<h3>More Examples</h3>
+										<p><a href="https://github.com/googlechrome/samples/tree/gh-pages/fetch-api" title="https://github.com/googlechrome/samples/tree/gh-pages/fetch-api">Google Fetch Examples</a></p>
+										<h3>Error Handling</h3>
+										<p><strong>fetch()</strong> has different error handling than jQueries $.ajax. This is because it uses promises. The promise only <i>catches</i> if the user is offline, or some unlikely networking error occurs, such a DNS lookup failure. Luckily <strong>.fetch()</strong> provides a simple 'ok' flag, that indicates whether a HTTP responses's status code is successful or not. An example of this can be found <a href="https://www.tjvantoll.com/2015/09/13/fetch-and-errors/" title="https://www.tjvantoll.com/2015/09/13/fetch-and-errors/">here</a>.</p>
 									</div>
 								</div>
 							</div>

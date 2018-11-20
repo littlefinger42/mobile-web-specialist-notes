@@ -5,43 +5,139 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<title>4 - Performance Optimization and Caching</title>
+		<title>4 - Progressive Web Apps</title>
 		
 		<!-- Styling -->
 		<link rel="stylesheet" href="../../dist/style/style.css">
 	</head>
 	<body>
 		<div class="container">
-			<h1>Performance Optimisation and Caching</h1>
-			<a href="../../">Back</a>
+			<h1>Progressive Web Apps</h1>
+			<a class="btn btn-primary" role="button" href="../../">Back</a>
 			
 			<div id="accordian">
 				<div class="card">
-					<div class="card-header" id="cacheApiHeader">
+					<div class="card-header" id="serviceWorkersHeader">
 						<h5 class="mb-0">
-							<button class="btn btn-link" data-toggle="collapse" data-target="#cacheApi" aria-expanded="false" aria-controls="cacheApi">
-								Cache API
+							<button class="btn btn-link" data-toggle="collapse" data-target="#serviceWorkers" aria-expanded="false" aria-controls="serviceWorkers">
+								Service Workers
 							</button>
 						</h5>
 					</div>
-					<div id="cacheApi" class="collapse" aria-labelledby="cacheApiHeader" data-parent="#accordion">
+					<div id="serviceWorkers" class="collapse" aria-labelledby="serviceWorkersHeader" data-parent="#accordion">
 						<div class="card-body">
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-sm">
-										<a href="https://developer.mozilla.org/en-US/docs/Web/API/Cache" title="https://developer.mozilla.org/en-US/docs/Web/API/Cache">Cache API MDN</a>
 										<h3>What</h3>
-										<p>A API to manage storage for requests and responses. An origin can have multiple caches; they are access by windows as well as workers.</p>
-									
-										<h3>Methods</h3>
-										<ul>
-											<li><code>Cache.match(request, options)</code> - Returns a promise that resolves to the response associated with the first matching request</li>
-											<li><code>Cache.matchAll(request, options)</code> - Returns a promise that resolves to an array of matching requests in the cache</li>
-											<li><code>Cache.add(request)</code> - Adds a response object to the cache. This is equivalent to calling <i>fetch()</i>, then using <i>put()</i>.</li>
-											<li><code>Cache.addAll([requests])</code> - Adds multiple response objects to the cache</li>
-											<li><code>Cache.put(request, response)</code> - Adds request and response to the cache</li>
-											<li><code>Cache.delete(request, options)</code> - Finds the entry. Returns a promise that resolves to true if the item has been deleted.</li>
-											<li><code>Cache.keys(request, options)</code> - Returns a promise that reolves to an array of cache keys</li>
+										<p>A script that runs in the background. Including features like push notifications and background sync. Their core feature is the ability to intercept network requests and manage a cache of responses.</p>
+
+                                        <h3>Requirements</h3>
+                                        <ol>
+                                            <li>HTTPs or localhost</li>
+                                            <li>The browser supports it</li>
+										</ol>
+										<h3>Caching Stategy</h3>
+										<a href="https://jakearchibald.com/2014/offline-cookbook/" title="https://jakearchibald.com/2014/offline-cookbook/">Jake Archibald's caching strategies</a>
+									</div>
+									<div class="col-sm">
+										<h3>Basic Architecture</h3>
+                                        <ol>
+											<li>The service worker is registered via <code>serviceWorkerContainer.register()</code></li>
+                                            <li>If successfull, it is registered in a <code>ServiceWorkerGlobalScope</code>. This is a context just for the service worker and has no access to the DOM.</li>
+                                            <li>Installation of the service worker is only done when service worker pages are accessed. An install event is the first one sent to the service worker. When the <code>oninstall</code> handler completes, the service worker is installed.</li>
+                                            <li>After installation, it recieves an activate event. The primary use for <code>onactivate</code> is for cleanup of resources in previous version of the service worker.</li>
+										</ol>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm">
+										<h3>Setting up a service worker</h3>
+										<ol>
+											<li><strong>Architect your app shell</strong> - The app's shell is the minimal HTML, CSS & JavaScript that is required for the user interface. Its first load should be quick, and it should be immediately cached. This step decides what is required in the appShell. What should be immediatly visible on the screen to the user?</li>
+											<li><strong>Registering the service worker</strong> - To install a service worker, you have to start by seeing if it is available, then registering it on your page.<br>
+<pre><code>if ('serviceWorker' in navigator) {
+	window.addEventListener('load', function() {
+			navigator.serviceWorker.register('/sw.js').then(function(registration) {
+			console.log('ServiceWorker registration successful with scope: ', registration.scope);
+		}, function(err) {
+			console.log('ServiceWorker registration failed: ', err);
+		});
+	});
+}</code></pre>The service worker file is at the root of the domain. This means that the service worker's scope will be the entire origin.</li>
+											<li><strong>Installing the service worker</strong> - After registration, installation is required. The service worker can listen for the event <i>install</i>.<br>
+<pre><code>self.addEventListener('install', (event) = > {
+	// Perform install steps
+});</code></pre>Inside our <i>install</i> callback, we need to: Open a cache, cache files, confirm whether all required assets are cached.<br>
+<pre><code>const CACHE_NAME = 'example-site-cache';
+const urlsToCache = ['/', '/styles/main.css', '/script/main.js'];
+
+self.addEventListener('install', (event) = > {
+	event.waitUntil(caches.open(CACHE_NAME).then((cache) => {
+		console.log('Opened cache');
+		return cache.addAll(urlsToCache);
+	}));
+});</code></pre>Remeber this is just one example. You can perform other tasks in the install step, or ignore it altogether.</li>
+											<li><strong>Cache and return requests</strong> - After installation, the service worker can recieve <i>fetch</i> events.<br>
+<pre><code>self.addEventListener('fetch', (event) => {
+	event.respondsWith(caches.match(event.request).then((response) => {
+		if (response) {
+			return response;
+		}
+		return fetch(event.request);
+	})
+}));</code></pre>Using <i>event.request</i>, it looks for a cached results. If we have a matching response, we return the cached value, otherwise we return the result of a call to fetch, which will make a network request and return the data if anything can be retrieved from the network. If we want to cache new requests, we can do the following:<br>
+<pre><code>self.addEventListener('fetch', (event) => {
+	event.respondWith(caches.match(event.request).then((response) => {
+		if (response) {
+			return response;
+		}
+
+		var fetchRequest = event.request.clone();
+
+		return fetch(fetchRequest).then((response) => {
+			if (!response || response.status !== 200 || response.type !== 'basic') {
+				return response;
+			}
+
+			var responseToCache = response.clone();
+
+			caches.open(CACHE_NAME).then((cache) => {
+				cache.put(event.request, responseToCache);
+			});
+
+			return response;
+		});
+	}));
+});</code></pre></li>
+											<li>
+												<strong>Updating your service worker</strong> - Eventually your service worker will need updating.
+												<ol>
+													<li>Update your sw.js</li>
+													<li>Your new service worker will trigger the <i>install</i> event</li>
+													<li>Because there is an existing service worker, it will go to a <i>waiting</i> state</li>
+													<li>When currently open pages are closed, the old service worker will be replaced with the new one</li>
+													<li>New service worker fires <i>activate</i> event</li>
+												</ol>
+											</li>
+										</ol>
+										
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm">
+										<img src="images/sw-lifecycle.png" width="100%" alt="Service worker lifecycle"/>
+									</div>
+									<div class="col-sm">
+										<img src="images/sw-events.png"  width="100%"  alt="Service worker events"/>
+										<h3>Examples</h3>
+										<ul class="nav flex-column">
+											<li class="nav-item">
+												<a class="nav-link" href="https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker" title="https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker">Google Examples</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="https://serviceworke.rs/" title="https://serviceworke.rs/">Mozilla Examples</a>
+											</li>
 										</ul>
 									</div>
 								</div>

@@ -5,131 +5,45 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<title>3 - Progressive Web Apps</title>
+		<title>3 - Accessibility</title>
 		
 		<!-- Styling -->
 		<link rel="stylesheet" href="../../dist/style/style.css">
 	</head>
 	<body>
 		<div class="container">
-			<h1>Progressive Web Apps</h1>
-			<a href="../../">Back</a>
+			<h1>Accessibility</h1>
+			<a class="btn btn-primary" role="button" href="../../">Back</a>
 			
 			<div id="accordian">
 				<div class="card">
-					<div class="card-header" id="serviceWorkersHeader">
+					<div class="card-header" id="tabOrderHeader">
 						<h5 class="mb-0">
-							<button class="btn btn-link" data-toggle="collapse" data-target="#serviceWorkers" aria-expanded="false" aria-controls="serviceWorkers">
-								Service Workers
+							<button class="btn btn-link" data-toggle="collapse" data-target="#tabOrder" aria-expanded="false" aria-controls="tabOrder">
+								Tab Order
 							</button>
 						</h5>
 					</div>
-					<div id="serviceWorkers" class="collapse" aria-labelledby="serviceWorkersHeader" data-parent="#accordion">
+					<div id="tabOrder" class="collapse" aria-labelledby="tabOrderHeader" data-parent="#accordion">
 						<div class="card-body">
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-sm">
-										<h3>What</h3>
-										<p>A script that runs in the background. Including features like push notifications and background sync. Their core feature is the ability to intercept network requests and manage a cache of responses.</p>
-
-                                        <h3>Requirements</h3>
-                                        <ol>
-                                            <li>HTTPs or localhost</li>
-                                            <li>The browser supports it</li>
-										</ol>
-										<h3>Caching Stategy</h3>
-										<a href="https://jakearchibald.com/2014/offline-cookbook/" title="https://jakearchibald.com/2014/offline-cookbook/">Jake Archibald's caching strategies</a>
+                                        <h3>Introduction</h3>
+                                        <p>Its important to make logical tab order so users can navigate the website without use of a keyboard. You may want to specify a tab order that follows relationships in the content, rather than following the order in the code.</p>
+                                        <h3>Examples</h3>
+                                        <a href="https://www.w3.org/TR/WCAG20-TECHS/H4.html" title="https://www.w3.org/TR/WCAG20-TECHS/H4.html">W3 Accessibility Tab Order</a>
+                                        <a href="https://webaim.org/techniques/keyboard/tabindex" title="https://webaim.org/techniques/keyboard/tabindex">Webaim</a>
 									</div>
 									<div class="col-sm">
-										<h3>Basic Architecture</h3>
-                                        <ol>
-											<li>The service worker is registered via <code>serviceWorkerContainer.register()</code></li>
-                                            <li>If successfull, it is registered in a <code>ServiceWorkerGlobalScope</code>. This is a context just for the service worker and has no access to the DOM.</li>
-                                            <li>Installation of the service worker is only done when service worker pages are accessed. An install event is the first one sent to the service worker. When the <code>oninstall</code> handler completes, the service worker is installed.</li>
-                                            <li>After installation, it recieves an activate event. The primary use for <code>onactivate</code> is for cleanup of resources in previous version of the service worker.</li>
-										</ol>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm">
-										<h3>Setting up a service worker</h3>
-										<ol>
-											<li><strong>Architect your app shell</strong> - The app's shell is the minimal HTML, CSS & JavaScript that is required for the user interface. Its first load should be quick, and it should be immediately cached. This step decides what is required in the appShell. What should be immediatly visible on the screen to the user?</li>
-											<li><strong>Registering the service worker</strong> - To install a service worker, you have to start by seeing if it is available, then registering it on your page.<br>
-<pre><code>if ('serviceWorker' in navigator) {
-	window.addEventListener('load', function() {
-			navigator.serviceWorker.register('/sw.js').then(function(registration) {
-			console.log('ServiceWorker registration successful with scope: ', registration.scope);
-		}, function(err) {
-			console.log('ServiceWorker registration failed: ', err);
-		});
-	});
-}</code></pre>The service worker file is at the root of the domain. This means that the service worker's scope will be the entire origin.</li>
-											<li><strong>Installing the service worker</strong> - After registration, installation is required. The service worker can listen for the event <i>install</i>.<br>
-<pre><code>self.addEventListener('install', (event) = > {
-	// Perform install steps
-});</code></pre>Inside our <i>install</i> callback, we need to: Open a cache, cache files, confirm whether all required assets are cached.<br>
-<pre><code>const CACHE_NAME = 'example-site-cache';
-const urlsToCache = ['/', '/styles/main.css', '/script/main.js'];
-
-self.addEventListener('install', (event) = > {
-	event.waitUntil(caches.open(CACHE_NAME).then((cache) => {
-		console.log('Opened cache');
-		return cache.addAll(urlsToCache);
-	}));
-});</code></pre>Remeber this is just one example. You can perform other tasks in the install step, or ignore it altogether.</li>
-											<li><strong>Cache and return requests</strong> - After installation, the service worker can recieve <i>fetch</i> events.<br>
-<pre><code>self.addEventListener('fetch', (event) => {
-	event.respondsWith(caches.match(event.request).then((response) => {
-		if (response) {
-			return response;
-		}
-		return fetch(event.request);
-	})
-}));</code></pre>Using <i>event.request</i>, it looks for a cached results. If we have a matching response, we return the cached value, otherwise we return the result of a call to fetch, which will make a network request and return the data if anything can be retrieved from the network. If we want to cache new requests, we can do the following:<br>
-<pre><code>self.addEventListener('fetch', (event) => {
-	event.respondWith(caches.match(event.request).then((response) => {
-		if (response) {
-			return response;
-		}
-
-		var fetchRequest = event.request.clone();
-
-		return fetch(fetchRequest).then((response) => {
-			if (!response || response.status !== 200 || response.type !== 'basic') {
-				return response;
-			}
-
-			var responseToCache = response.clone();
-
-			caches.open(CACHE_NAME).then((cache) => {
-				cache.put(event.request, responseToCache);
-			});
-
-			return response;
-		});
-	}));
-});</code></pre></li>
-											<li>
-												<strong>Updating your service worker</strong> - Eventually your service worker will need updating.
-												<ol>
-													<li>Update your sw.js</li>
-													<li>Your new service worker will trigger the <i>install</i> event</li>
-													<li>Because there is an existing service worker, it will go to a <i>waiting</i> state</li>
-													<li>When currently open pages are closed, the old service worker will be replaced with the new one</li>
-													<li>New service worker fires <i>activate</i> event</li>
-												</ol>
-											</li>
-										</ol>
-										
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm">
-										<img src="images/sw-lifecycle.png" width="100%" alt="Service worker lifecycle"/>
-									</div>
-									<div class="col-sm">
-										<img src="images/sw-events.png"  width="100%"  alt="Service worker events"/>
+                                        <h3>How?</h3>
+                                        <p>An alternative order can be specified using the <i>tabindex</i> attribute of the interactive element. The <i>tabindex</i> is given a value between 0 and 32767. Elements that have a <i>tabindex</i> value higher than zero will receive focus before elements without a <i>tabindex</i> or a <i>tabindex</i> of 0.</p>
+                                        <p>A <i>tabindex</i> usually has three distinct uses:
+                                        <ul>
+                                            <li><code>tabindex="1"</code> - (or any number > 1) Defines explicit tab order. Generally a bad idea.</li>
+                                            <li><code>tabindex="1"</code> - (or any number > 1) Allows any element to recieve keyboard focus if it has this attribute. Places element in the logical navigation flow.</li>
+                                            <li><code>tabindex="1"</code> - (or any number > 1) Removes from tab order and allows elements to recieve a <i>programmatic</i> focus, set by JS.</li>
+                                        </ul></p>
 									</div>
 								</div>
 							</div>
@@ -137,43 +51,178 @@ self.addEventListener('install', (event) = > {
 					</div>
 				</div>
 				<div class="card">
-					<div class="card-header" id="webManifestHeader">
+					<div class="card-header" id="skipLinksHeader">
 						<h5 class="mb-0">
-							<button class="btn btn-link" data-toggle="collapse" data-target="#webManifest" aria-expanded="false" aria-controls="webManifest">
-								Web Manifest
+							<button class="btn btn-link" data-toggle="collapse" data-target="#skipLinks" aria-expanded="false" aria-controls="skipLinks">
+								Skip Links
 							</button>
 						</h5>
 					</div>
-					<div id="webManifest" class="collapse" aria-labelledby="webManifestHeader" data-parent="#accordion">
+					<div id="skipLinks" class="collapse" aria-labelledby="skipLinksHeader" data-parent="#accordion">
 						<div class="card-body">
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-sm">
-										<h3>What</h3>
-										<p>The web app manifest is a simple JSON which defines how the app looks, and provides the ability to attach to the home screen. It defines what the user can launch, and the appearance at launch.</p>        
-                                        <h3>How</h3>
-                                        <p>First you have to tell the browser to use your manifest file:<br>
-                                            <code>&lt;link rel="manifest" href="/manifest.json"&gt;</code>
-                                        </p>
-                                        <p>The manifest file can have various properties:</p>
-                                        <ul>
-                                            <li><strong>start_url</strong> - The first URL which is opened when you open the app. If this isn't defined, then the current page is used.</li>
-                                            <li><strong>name & short_name</strong> - short_name is used as the text for the user's homescreen. name is used in the webapp installation banner</li>
-                                            <li><strong>background_color</strong> - Unless this is set, the app launches with a white background</li>
-                                            <li><strong>icons</strong></li> - Array of icons in different sizes
-                                            <li><strong>theme_colour</strong> - Specifies the colour of the toolbar</li>
-                                            <li><strong>display</strong> - If you want your webapp to hide the browser's UI or not. Set to "standalone", otherwise to "browser"</li>
-                                            <li><strong>orientation</strong> - Can be landscape or portrait</li>
-                                        </ul>
-                                        <p>Click <a href="./manifest.json" title="Example manifest download link" target="_BLANK">here</a> to download a sample manifest</p>
-                                        <h3>Testing</h3>
-                                        <p>You can open the developer tool's <strong>Application</strong> pane.</p>
+                                        <h3>Introduction</h3>
+										<p>The main content or navigation isn't usually the first thing on the page. Keyboard and screen readers must navigate through a lot of elements before they get to where they want to be. A <i>skiplink</i> is the first element on the page, and is usually hidden. The screenreader or keyboard user can focus on this element and use it to navigate to the content or the navigation bar, thus saving time.</p>
 									</div>
+                                    <div class="col-sm">
+                                        <h3>How?</h3>
+                                        <p>Create a anchor tag element as the first element, straight after the <code>&lt;body&gt;</code> opening tag. Then make it visibility:hidden, unless focus is on it.
+<pre><code>&lt;body&gt;
+    &lt;a class="skiplink" href="#maincontent"&gt;Skip to main content&lt;/a&gt;
+    ...
+    &lt;main id="maincontent"&gt;
+    &lt;h1&gt;Heading&lt;/h1&gt;
+    ...
+
+
+.skiplink {
+    visibility: hidden;
+}
+.skiplink:focus {
+    visibility: visible;
+}
+</code></pre></p>
+                                    </div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="ariaHeader">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#aria" aria-expanded="false" aria-controls="aria">
+                                ARIA
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="aria" class="collapse" aria-labelledby="ariaHeader" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h3>Introduction</h3>
+                                        <p>Accessible Rich Internet Applications <strong>(ARIA)</strong>  are additional attributes to add to elements to define roles, values and traits. These attributes are used to make the web content more accessible. It is mostly used to define a role.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h3>Roles</h3>
+                                        <p>Roles describe widgets that aren't otherwise available in HTML4. Some roles have their own elements in HTML5. Where available, HTML5 semenatics should be preferred over HTML4 roles. There are more than 30 <i>ARIA</i> roles, including: alert, checkbox, dialog, menubar, slider, tooltip. Roles don't actually do anything themselves, they just provide the screen reader with more information.</p>
+                                        <p><code>&lt;div class="btn btn-default" role="button"&gt;Submit&lt;/div&gt;</code></p>
+                                    </div>
+                                    <div class="col-sm">
+                                        <h3>States</h3>
+                                        <p>States describe the current interaction state of an element. There are 9 states. For example: aria-checked, aria-disabled, aria-invalid</p>
+                                        <p>
+                                            <code>&lt;div aria-expanded="true"&gt;Menu&lt;/div&gt;</code>
+                                            <br>
+                                            Will output <i>"Menu Expanded"</i> by a screenreader.
+                                        </p>
+                                        <h3>Properties</h3>
+                                        <p>Properties describe the characteristics of these widgets. There are more than 20 ARIA properties including: aria-describedby, aria-label, aria-required, aria-draggable</p>
+                                        <p>
+                                            <code>&lt;div aria-label="say this"&gt;Say that&lt;/div&gt;</code>
+                                            <br>
+                                            Will output <i>"say this"</i> by a screenreader.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h3>Live Regions</h3>
+                                        <p>Dynamic content which updates a page without reload, and isn't interactive, is a <i>live region</i>. <i>Live regions</i> have their own ARIA properties:
+                                            <ul>
+                                                <li>
+                                                    <strong>aria-live</strong> - Used to set the priority with which screenreader should treat updates to this region. Possible settings are:
+                                                    <ul>
+                                                        <li><i>Off</i> - (default) User wont recieve any notification of an update.</li>
+                                                        <li><i>Polite</i> - Will wait until the user pauses, before announcing an update.</li>
+                                                        <li><i>Assertive</i> - Wont wait. Will announce the update instantly.</li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <strong>aria-controls</strong> - Used to associate a control with the regions it controls. Regions are identified like an ID in a div. Multiple regions can be controlled using a space, eg <code>aria-controls="myRegion1 myRegion2"</code>
+                                                </li>
+                                            </ul>
+                                        </p>
+                                        <p>An example can be found on <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#Dropdown_box_updates_useful_onscreen_information" title="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#Dropdown_box_updates_useful_onscreen_information">MDN</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="colourContrastHeader">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#colourContrast" aria-expanded="false" aria-controls="colourContrast">
+                                Colour Contrast
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="colourContrast" class="collapse" aria-labelledby="colourContrastHeader" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h4>Level A WCAG Requirements</h4>
+                                        <p>Colour should not be used as the sole method of conveying content or distinguishing visual elements. (links should not be identifiable just by the colour). For links, if you don’t provide any visual que that isn’t colour for links, the colour contrast between text should be at least <strong>3:1</strong>. For links, they must have a non-colour designator for focus/hover states.</p>
+                                    </div>
+                                    <div class="col-sm">
+                                        <h4>Level AA WCAG Requirements</h4>
+                                        <p>The foreground and the background colour should have a <strong>4.5:1</strong> contrast ratio.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <p>
+                                            Therefore, to be AA compliant, the page must have the following:
+                                            <ul>
+                                                <li>4.5:1 Contrast between non-link text colour and the background</li>
+                                                <li>4.5:1 Contrast between link text colour and the background</li>
+                                                <li>3:1 Contrast between link text colour and surrounding text colour</li>
+                                            </ul>
+                                            This becomes more complicated if you want to provide various link states (hover/focus, visited, active) colous. W3 has a <a href="https://www.w3.org/TR/2008/NOTE-WCAG20-TECHS-20081211/working-examples/G183/link-contrast.html" title="https://www.w3.org/TR/2008/NOTE-WCAG20-TECHS-20081211/working-examples/G183/link-contrast.html"></a>list of colours which fit these criteria for links.<br>
+                                            <a href="https://webaim.org/resources/contrastchecker/" title="https://webaim.org/resources/contrastchecker/">Webaim colour contrast checker</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="semanticMarkupHeader">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#semanticMarkup" aria-expanded="false" aria-controls="semanticMarkup">
+                                Semantic Markup
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="semanticMarkup" class="collapse" aria-labelledby="semanticMarkupHeader" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h3>Names &amp; Roles</h3>
+                                        <p>Every element which can be interacted, should have a name and a role. If the user is expected to put an input, it should also have a value.</p>
+                                        <h4>Name</h4>
+                                        <ul>
+                                            <li><b>Form field</b> - The name for a form field is it's label. <code>&lt;label for="text_1"&gt;<strong>Fruit type</strong>&lt;/label&gt;&lt;input id="text_1" type="text" value=""/&gt;</code></li>
+                                            <li><b>Link</b> - The name for an anchor tag is it's text, or alt tag. <code>&lt;a href="/home.html"&gt;<strong>Home</strong>&lt;/a&gt;</code></li>
+                                            <li><b>Button</b> - The name for a button is the text, or the value. <code>&lt;button&gt;<strong>Home</strong>&lt;button&gt;</code></li>
+                                        </ul>
+                                        <h4>Role</h4>
+                                        <p>Roles are determined by the HTML element. It determines the standard actions and properties. You can also use the <i>type=""</i> attribute on <i>&lt;input&gt;</i> to set the role of an element. Eg <code>&lt;input <strong>type="button"</strong> value="save"&gt;</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 		</div>
 
